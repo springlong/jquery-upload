@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>上传组件测试 - 非自动上传</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <script src="jquery/jquery-1.9.1.min.js"></script>
+  <script src="../src/jquery.upload.js"></script>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .cont-pic {
+      overflow: hidden;
+      margin: 20px;
+    }
+
+    .cont-pic-add {
+      float: left;
+      height: 30px;
+      line-height: 30px;
+      padding: 0 20px;
+      border: 1px solid #ddd;
+    }
+
+    .cont-pic-add:hover {
+      text-decoration: none;
+    }
+
+    .cont-pic-submit {
+      float: left;
+      height: 30px;
+      margin-left: 10px;
+      line-height: 30px;
+      padding: 0 20px;
+      border: 1px solid #ddd;
+      color: #fff;
+      background-color: #2998E0;
+    }
+
+    .cont-pic-submit:hover {
+      text-decoration: none;
+      background-color: #488BB7;
+    }
+
+    .cont-pic-tips {
+      float: left;
+      margin-left: 10px;
+      line-height: 30px;
+    }
+
+    .cont-pic-tips.error {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="cont-pic">
+    <a href="javascript:void(0);" class="cont-pic-add" id="addPic">+ 选择文件</a>
+    <a href="javascript:void(0);" class="cont-pic-submit" id="submitPic">上传</a>
+    <span class="cont-pic-tips j_errorTip"></span>
+  </div>
+  <script>
+    // 绑定图片的上传
+    $.upload('#addPic', {
+      // 上传字段的name属性
+      name: 'file',
+      // 上传表单的action
+      action: 'page/fileupload-done.html',
+      // 是否允许上传队列，默认为true，每次点击上传按钮选择的文件都将被添加到上传队列
+      // 为false时，每次点击上传按钮选择文件将自动替换之前所选择的文件
+      allowedQueue: false,
+      // 是否添加文件后自动上传，默认为true
+      // 为false时，需要通过uploadTrigger参数指定上传的触发器
+      autoUpload: false,
+      // 指定手动上传的触发器
+      uploadTrigger: '#submitPic',
+      // 点击触发器时未选择文件时的回调函数
+      triggerError: function() {
+        $('.j_errorTip').html('请选择需要上传的文件！').addClass('error');
+      },
+      // 数据类型，text-纯文本类型，json-json对象（默认）
+      dataType: 'json',
+      // 支持的文件类型（扩展名），多个类型使用逗号隔开
+      // 在没有设置acceptMime参数时，会自动根据扩展名从MIMEData数据中读取MIME信息然后赋值到file表单的accept属性（支持IE10）
+      acceptType: 'xls,xlsx',
+      // 不符合acceptType参数设置的文件格式时的回调函数
+      // 参数-fileName，格式错误的文件名称（多个文件名称使用逗号隔开）
+      // 参数-options，配置选项
+      acceptError: function(fileName, options) {
+        $('.j_errorTip').html('文件格式不正确！').addClass('error');
+      },
+      // 最大允许的文件大小，单位MB（使用HTML5对象判断，支持IE10+）（后端同样需要判断，前端判断是为了减轻不必要的服务器请求）
+      maxFileSize: 2,
+      // 文件大小超出限制时的回调函数
+      // 参数-fileName，超出大小限制的文件名称（多个文件名称使用逗号隔开）
+      // 参数-options，配置选项
+      maxFileSizeError: function(fileName, options) {
+        $('.j_errorTip').html('上传的文件请控制在' + options.maxFileSize + 'M以内！').addClass('error');
+      },
+      // 添加文件时的处理函数，如果返回false将阻止文件的添加
+      // 参数-data，相关数据
+      // data.ele, 绑定上传组件的元素
+      // data.options，配置选项
+      // data.filePath，文件路径
+      // data.fileName，文件名称
+      // data.supportProgress，是否支持上传进度显示
+      // data.context，上传结果处理的上下文元素
+      // data.form，表单数据，支持data.form.append('name', 'value')附加表单字段
+      add: function(data) {
+        $('.j_errorTip').html('已选择文件：' + data.fileName).removeClass('error');
+      },
+      // 执行函数-上传完成（需要继续判断后端是否处理成功）
+      // 参数-data，相关数据，同add回调函数，其它可用字段：
+      // data.response，后端返回的原始数据
+      // data.result，后端返回的数据经过dataType处理后的数据
+      done: function(data) {
+        if (data.result.code === 0) {
+          $('.j_errorTip').html('上传成功：' + data.fileName).removeClass('error');
+        } else {
+          $('.j_errorTip').html('上传失败：' + data.fileName).addClass('error');
+        }
+      },
+      // 执行函数-上传错误
+      // 参数-data，相关数据，同add回调函数
+      error: function(data) {
+        alert('上传失败');
+      }
+    });
+  </script>
+</body>
+
+</html>
