@@ -1,6 +1,6 @@
 # jQuery upload
 
-基于jQuery的文件上传组件
+基于jQuery的文件上传插件
 
 由于示例文件上传不支持本地file协议，为了更好的查看示例文件，我们提供了node server配置，安装好node依赖后执行 `node server.js` 即可。
 
