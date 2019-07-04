@@ -231,6 +231,12 @@
         console.log('progress: ' + data.loaded + ' ' + data.total + ' ' + data.percent);
       }
     });
+
+    // 删除图片
+    $('body').on('click', '.j_picItem .del', function(evt) {
+      $(this).closest('.j_picItem').remove();
+      console.log('删除图片成功!');
+    });
   </script>
 </body>
 
